@@ -24,4 +24,5 @@ class hex_node:
     def get_neighbors(self):
         return self.neighbors
 
-    def add_neighbors
+    def add_neighbor(self, new_neighbor):
+        self.enighbors.append(new_neighbor)
