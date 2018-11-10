@@ -1,16 +1,12 @@
-# Implementatipon of a hex grid class, where hex grids are stored as a graph that represents the nodes. Has inner nodes
+# Implementation of a hex grid class, where hex grids are stored as a graph that represents the nodes. Has inner nodes
 # that map to their neighbors.
-
 
 
 class hex_node:
 
-
-    def __init__(neighbors = [], id = 1, ):
+    def __init__(self, neighbors=[], id=1, ):
         self.neighbors = neighbors
         self.id = id
-
-
 
     def is_corner(self):
         return len(self.neighbors) == 3
