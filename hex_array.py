@@ -91,7 +91,7 @@ class HexArray:
 
 
 # Greedy algo
-test = HexArray(10)
+test = HexArray(3)
 
 for row_index in range(test.num_rows):
     for col_index in range(test.get_row_length(row_index)):
@@ -103,7 +103,6 @@ while repeat:
     repeat = False
     for row_index in range(test.num_rows):
         for col_index in range(test.get_row_length(row_index)):
-            while True:
                 test.set(row_index, col_index, test.get(row_index, col_index) + 1)
                 if not test.valid():
                     test.set(row_index, col_index, test.get(row_index, col_index) - 1)
