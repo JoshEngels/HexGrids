@@ -5,12 +5,11 @@
 
 class hex_node:
 
-
-    def __init__(neighbors = [], id = 1, ):
+    def __init__(self, neighbors = [], value = -1, id = 1, coordinate = (0,0)):
         self.neighbors = neighbors
+        self.value = value
         self.id = id
-
-
+        self.coordinate = coordinate
 
     def is_corner(self):
         return len(self.neighbors) == 3
@@ -25,4 +24,173 @@ class hex_node:
         return self.neighbors
 
     def add_neighbor(self, new_neighbor):
-        self.enighbors.append(new_neighbor)
+        self.neighbors.append(new_neighbor)
+
+    def get_value(self):
+        return self.value
+
+    def set_value(self, value):
+        self.value = value
+
+    def get_coordinate(self):
+        return self.coordinate
+
+    def get_id(self):
+        return self.id
+
+    def is_valid(self):
+        neighbor_vals = [neighbor.get_value() for neighbor in self.neighbors]
+        for req in range(1, self.value):
+            if req not in neighbor_vals:
+                return False
+        return True
+
+    def try_increment(self):
+        """
+        Will have problems with parallel implementations
+        :return:
+        """
+        self.value += 1
+        if not self.is_valid():
+            self.value -= 1
+            return False
+        can_neighbors = [neighbor.is_valid() for neighbor in self.neighbors]
+        if False in can_neighbors:
+            self.value -= 1
+            return False
+        return True
+
+
+
+
+class hex_grid:
+
+    def __init__(self, size):
+        self.nodes_grid = []
+        unique_id = 1
+        for row in range(size):
+            new_nodes = []
+            for col in range(row + size):
+                new_node = hex_node([], 1, unique_id, (row, col))
+                unique_id += 1
+                new_nodes.append(new_node)
+            new_nodes.extend([None for _dummy in range((size - row) - 1)])
+            self.nodes_grid.append(new_nodes)
+        for row in range(size, (2 * size) - 1):
+            new_nodes = [None for _dummy in range((row - size) + 1)]
+            for col in range(3 * size - (row + 2)):
+                new_node = hex_node([], 1, unique_id, (row, col + (row - size + 1)))
+                unique_id += 1
+                new_nodes.append(new_node)
+            self.nodes_grid.append(new_nodes)
+
+        for row in self.nodes_grid:
+            for node in row:
+                if node is not None:
+                    coords = node.get_coordinate()
+                    neighbors = []
+                    for direction in [(-1, -1), (-1, 0), (0, -1), (0, 1), (1, 0), (1, 1)]:
+                        try:
+                            if coords[0] + direction[0] >= 0 and coords[1] + direction[1] >= 0:
+                                neighbor = self.nodes_grid[coords[0] + direction[0]][coords[1] + direction[1]]
+                                if neighbor is not None:
+                                    node.add_neighbor(neighbor)
+                        except:
+                            None
+
+        self.nodes_list = []
+        for row in self.nodes_grid:
+            for node in row:
+                if node is not None:
+                    self.nodes_list.append(node)
+
+    def get_node_grid(self):
+        return self.nodes_grid
+
+    def get_node_list(self):
+        return self.nodes_list
+
+    def print_coords(self):
+        string = ""
+        for row in self.nodes_grid:
+            for val in row:
+                if val == None:
+                   string += "(None) "
+                else:
+                    string += str(val.get_coordinate()) + " "
+            string += "\n"
+        print(string)
+
+    def print_vals(self):
+        string = ""
+        for row in self.nodes_grid:
+            for val in row:
+                if val == None:
+                   string += "- "
+                else:
+                    string += str(val.get_value()) + " "
+            string += "\n"
+        print(string)
+
+    def print_ids(self):
+        string = ""
+        for row in self.nodes_grid:
+            for val in row:
+                if val == None:
+                   string += "- "
+                else:
+                    string += str(val.get_id()) + " "
+            string += "\n"
+        print(string)
+
+    def is_valid(self):
+        for row in self.nodes_grid:
+            for val in row:
+                if val is not None:
+                   if not val.is_valid():
+                       return False
+        return True
+
+    def calculate_score(self):
+        score = 0
+        for row in self.nodes_grid:
+            for val in row:
+                if val is not None:
+                   score += val.get_value()
+        return score
+
+    def print_submission(self):
+        string = ""
+        no_new_line = True
+        for row in self.nodes_grid:
+            if not no_new_line:
+                string += "),\n"
+            else:
+                no_new_line = False
+            string += "("
+            no_comma = True
+            for val in row:
+                if val is not None:
+                    if not no_comma:
+                        string += ", "
+                    else:
+                        no_comma = False
+                    string += str(val.get_value())
+        string += ")"
+        print(string)
+        return string
+
+# grid_5 = hex_grid(4)
+#
+# # grid_5.print_ids()
+# # grid_5.print_vals()
+# # print(grid_5.calculate_score())
+#
+# changed = True
+# while changed:
+#     changed = False
+#     for node in grid_5.get_node_list():
+#         changed = changed or node.try_increment()
+# grid_5.print_vals()
+# print(grid_5.calculate_score())
+# grid_5.print_submission()
