@@ -4,9 +4,11 @@
 
 class hex_node:
 
-    def __init__(self, neighbors=[], id=1, ):
+
+    def __init__(self, value, neighbors=[], id=1):
         self.neighbors = neighbors
         self.id = id
+        self.value = value
 
     def is_corner(self):
         return len(self.neighbors) == 3
@@ -21,4 +23,5 @@ class hex_node:
         return self.neighbors
 
     def add_neighbor(self, new_neighbor):
-        self.enighbors.append(new_neighbor)
+        self.neighbors.append(new_neighbor)
+
