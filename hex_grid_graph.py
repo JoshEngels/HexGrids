@@ -66,6 +66,7 @@ class hex_node:
 class hex_grid:
 
     def __init__(self, size):
+        self.size = size
         self.nodes_grid = []
         unique_id = 1
         for row in range(size):
@@ -109,6 +110,9 @@ class hex_grid:
 
     def get_node_list(self):
         return self.nodes_list
+
+    def get_size(self):
+        return self.size
 
     def print_coords(self):
         string = ""
@@ -157,6 +161,7 @@ class hex_grid:
             for val in row:
                 if val is not None:
                    score += val.get_value()
+        score -= ((3 * (self.size ** 2)) - (3 * self.size) + 1)
         return score
 
     def print_submission(self):
@@ -180,11 +185,12 @@ class hex_grid:
         print(string)
         return string
 
-# grid_5 = hex_grid(4)
+# grid_5 = hex_grid(5)
 #
-# # grid_5.print_ids()
-# # grid_5.print_vals()
-# # print(grid_5.calculate_score())
+# grid_5.print_ids()
+# grid_5.print_vals()
+# print(grid_5.calculate_score())
+# grid_5.print_coords()
 #
 # changed = True
 # while changed:
