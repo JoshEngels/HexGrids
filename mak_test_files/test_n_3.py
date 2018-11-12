@@ -149,7 +149,6 @@ def fill_ones(size = 3, trials = 50, infinite = False):
     best_score = 0
     best_grid = None
 
-
     while True:
         for _trail in range(trials):
             hexes = hex_grid_graph.hex_grid(size)
@@ -186,7 +185,13 @@ def fill_ones(size = 3, trials = 50, infinite = False):
 
 
 # best_grid = random_improvement(5, 1000, True)
-best_grid = fill_ones(6, 1000, True)
+# best_grid = fill_ones(5, 1000, True)
+
+
+# gets a decent grid for improve to mess around with
+def get_good_grid():
+    return fill_ones(8)
+
 
 # new_grid = hex_grid_graph.hex_grid(5)
 #

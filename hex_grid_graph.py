@@ -11,6 +11,9 @@ class hex_node:
         self.id = id
         self.coordinate = coordinate
 
+    def __str__(self):
+        return str(self.value)
+
     def is_corner(self):
         return len(self.neighbors) == 3
 
@@ -50,16 +53,21 @@ class hex_node:
         Will have problems with parallel implementations
         :return:
         """
-        self.value += 1
+        return self.try_change(1)
+
+    def try_decrement(self):
+        return self.try_change(-1)
+
+    def try_change(self, change):
+        self.value += change
         if not self.is_valid():
-            self.value -= 1
+            self.value -= change
             return False
         can_neighbors = [neighbor.is_valid() for neighbor in self.neighbors]
         if False in can_neighbors:
-            self.value -= 1
+            self.value -= change
             return False
         return True
-
 
 
 
