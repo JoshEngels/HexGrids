@@ -1,13 +1,70 @@
+# make it so you don't need to check if it will work, because you only fill ones that would
 
-#memoize thisssss
-def generate_all(index, length_this, max_value, length_last, needs):
+generate_map = {}
+
+def generate_all_new(first, length_this, length_last, needs, max_value):
+    if length_this == 0:
+        return [[]]
+
+    key = str(length_this) + " " + str(length_last) + str(needs) + str(max_value)
+    if length_this < length_last:
+        key += str(first)
+
+    if key in generate_map:
+        return list(generate_map[key])
+
+    if not needs:
+        future_needs = {}
+    else:
+        future_needs = {index - 1: need for (index, need) in needs.items() if index > 0}
+
+    one_step_down = generate_all_new(False, length_this - 1, length_last - 1, future_needs, max_value)
+
+    result = []
+    for i in range(1, max_value + 1):
+        for toAdd in one_step_down:
+            temp = list(toAdd)
+            temp.insert(0, i)
+
+            if length_last < length_this:
+                if 0 in needs:
+                    need = set(needs[0])
+                    need.discard(temp[0])
+                    need.discard(temp[1])
+                    if not not need:
+                        continue
+
+            else:
+                if first and 0 in needs:
+                    need = set(needs[0])
+                    need.discard(temp[0])
+                    if not not need:
+                        continue
+
+                if 1 in needs:
+                    need = set(needs[1])
+                    need.discard(temp[0])
+                    if len(temp) > 1:
+                        need.discard(temp[1])
+                    if not not need:
+                        continue
+
+            result.append(temp)
+
+    generate_map[key] = result
+
+    return result
+
+
+#memoize this not anymore
+def generate_all_old(index, length_this, max_value, length_last, needs):
 
 
     if index == length_this:
         return [[]]
 
     result = []
-    one_step_down = generate_all(index + 1, length_this, max_value, length_last, needs)
+    one_step_down = generate_all_old(index + 1, length_this, max_value, length_last, needs)
 
     for i in range(1, max_value + 1):
         for toAdd in one_step_down:
@@ -41,14 +98,9 @@ def generate_all(index, length_this, max_value, length_last, needs):
 
     return result
 
-needs_map = {}
-
 
 # needs is a dictionary describing needs: (index, required values)
 def generate_needs(last_row, current_row):
-    key = list(last_row) + list(current_row)
-    if key in needs_map:
-        return list(needs_map[key])
 
     needs = {}
     for index, value in enumerate(current_row):
@@ -78,13 +130,14 @@ def generate_needs(last_row, current_row):
                     this_needs.add(i)
             needs[index] = this_needs
 
-    needs_map[key] = needs
     return needs
 
 
 
 
-memo = {}
+best_map = {}
+min_row = 100
+rows_seen = set([])
 
 def generate_best(last_row, needs, row_num, row_lengths):
 
@@ -92,13 +145,19 @@ def generate_best(last_row, needs, row_num, row_lengths):
     best_rows = []
 
     key = str(last_row) + str(needs) + str(row_num)
-    if key in memo:
-        return memo[key][0], list(memo[key][1])
+    if key in best_map:
+        return best_map[key][0], list(best_map[key][1])
 
-    all_possible = generate_all(0, row_lengths[row_num], 7, row_lengths[row_num - 1], needs)
+    all_possible = generate_all_new(True, row_lengths[row_num], row_lengths[row_num - 1], needs, 7)
+    #all_possible = generate_all_old(0, row_lengths[row_num], 7, row_lengths[row_num - 1], needs)
     for current_row in all_possible:
-            if row_num == 5:
+
+            global min_row
+            if row_num <= min_row and row_num in rows_seen:
+                min_row = row_num
                 print(current_row)
+                #print(len(best_map))
+            rows_seen.add(row_num)
 
             new_needs = generate_needs(last_row, current_row)
 
@@ -124,19 +183,29 @@ def generate_best(last_row, needs, row_num, row_lengths):
                     best_rows = test_rows
                     best_sum = test_sum
 
-    memo[key] = best_sum, list(best_rows)
+    best_map[key] = best_sum, list(best_rows)
 
     return best_sum, list(best_rows)
 
 
 
-
-needies = generate_needs([1,2], [3,3,4])
+needies = generate_needs([1,3,2,4], [4,5,1])
 
 #print(needies)
-#print(generate_all(0, 4, 7, 3, needies))
+#print(generate_all_old(0, 2, 7, 3, needies))
+#print(generate_all_new(True, 2, 3, needies, 7))
 
 
+import time
+
+t0 = time.time()
+#n=2
 #print(generate_best([10], [], 1, [1,2,3,2]))
-print(generate_best([10, 10], [], 1, [2, 3, 4, 5, 4, 3]))
-#print(generate_best([10, 10, 10], [], 1, [3, 4, 5, 6, 7, 6, 5, 4]))
+
+#n=3
+#print(generate_best([10, 10], [], 1, [2, 3, 4, 5, 4, 3]))
+
+#n=4
+print(generate_best([10, 10, 10], [], 1, [3, 4, 5, 6, 7, 6, 5, 4]))
+t1 = time.time()
+print(t1 - t0)
