@@ -1,5 +1,6 @@
 # import hex_grid_graph
 import mak_test_files.test_n_3 as test3
+import random
 
 # ToDo: Write a general random greedy that takes in a list of nodes and greedies it. Doesn't have to be the whole graph
 
@@ -10,6 +11,17 @@ def simplify_area(node_list):
         for node in node_list:
             if node.get_value() == value_to_decrement:
                 node.try_decrement()
+
+def random_greedy(node_list):
+
+    node_list = random.shuffle(list(node_list))
+    did_increment = True
+
+    while did_increment:
+        did_increment = False
+        for node in node_list:
+            if node.try_increment():
+                did_increment = True
 
 
 # node_map = hex_grid_graph.hex_grid(7)
