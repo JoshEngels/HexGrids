@@ -176,8 +176,8 @@ def fill_ones(size = 3, trials = 50, infinite = False):
                 best_score = score
                 best_grid = hexes
 
-        print("Best Score:", best_grid.calculate_score())
-        best_grid.print_submission()
+        #print("Best Score:", best_grid.calculate_score())
+        #best_grid.print_submission()
         if not infinite:
             break
 
@@ -188,9 +188,8 @@ def fill_ones(size = 3, trials = 50, infinite = False):
 # best_grid = fill_ones(5, 1000, True)
 
 
-# gets a decent grid for improve to mess around with
-def get_good_grid():
-    return fill_ones(8)
+def get_good_grid(size, trials):
+    return fill_ones(size, 10)
 
 
 # new_grid = hex_grid_graph.hex_grid(5)
