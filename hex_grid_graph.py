@@ -71,6 +71,7 @@ class hex_node:
 
 
 
+
 class hex_grid:
 
     def __init__(self, size):
@@ -112,6 +113,18 @@ class hex_grid:
             for node in row:
                 if node is not None:
                     self.nodes_list.append(node)
+
+    def __copy__(self):
+        copied_grid = hex_grid(self.size)  # at first the same size
+        for original_node, copy_node in zip(self.get_node_list(), copied_grid.get_node_list()):
+            original_node.set_value(copy_node.get_value())  # ids should be the same, so no need to set
+        return copied_grid
+
+    def __eq__(self, other):
+        for original_node, copy_node in zip(self.get_node_list(), other.get_node_list()):
+            if original_node.get_value() != copy_node.get_value():  # if all values the same, they  are the same
+                return False
+        return True
 
     def get_node_grid(self):
         return self.nodes_grid
@@ -192,6 +205,8 @@ class hex_grid:
         string += ")"
         print(string)
         return string
+
+
 
 # grid_5 = hex_grid(5)
 #
