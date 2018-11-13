@@ -114,10 +114,11 @@ class hex_grid:
                 if node is not None:
                     self.nodes_list.append(node)
 
+    # should probably change this to deep copy
     def __copy__(self):
         copied_grid = hex_grid(self.size)  # at first the same size
         for original_node, copy_node in zip(self.get_node_list(), copied_grid.get_node_list()):
-            original_node.set_value(copy_node.get_value())  # ids should be the same, so no need to set
+            copy_node.set_value(original_node.get_value())  # ids should be the same, so no need to set
         return copied_grid
 
     def __eq__(self, other):
