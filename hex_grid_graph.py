@@ -1,7 +1,11 @@
-# Implementatipon of a hex grid class, where hex grids are stored as a graph that represents the nodes. Has inner nodes
+ # Implementatipon of a hex grid class, where hex grids are stored as a graph that represents the nodes. Has inner nodes
 # that map to their neighbors.
 
-
+# dictionary of number of squares in a hex to the length of its side
+hex_number_map = {19: 3, 37: 4, 61: 5, 91: 6, 127: 7, 169: 8, 217: 9, 271: 10,
+                  331: 11, 397: 12, 469: 13, 547: 14, 631: 15, 721: 16, 817: 17, 919: 18,
+                  1027: 19, 1141: 20, 1261: 21, 1387: 22, 1519: 23, 1657: 24, 1801: 25, 1951: 26,
+                  2107: 27}
 
 class hex_node:
 
@@ -126,6 +130,21 @@ class hex_grid:
             if original_node.get_value() != copy_node.get_value():  # if all values the same, they  are the same
                 return False
         return True
+
+    @staticmethod
+    def create_from_list(value_list):
+        created = hex_grid(hex_number_map[len(value_list)])
+        node_list = created.get_node_list()
+        for index, value in enumerate(value_list):
+            node_list[index].set_value(value)
+        return created
+
+    @staticmethod
+    def create_from_2d_list(array):
+        temp_list = []
+        for row in array:
+            temp_list.extend(list(row))
+        return hex_grid.create_from_list(temp_list)
 
     def get_node_grid(self):
         return self.nodes_grid
