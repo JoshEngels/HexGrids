@@ -18,6 +18,9 @@ class hex_node:
     def __str__(self):
         return str(self.value)
 
+    def __repr__(self):
+        return str(self)
+
     def is_corner(self):
         return len(self.neighbors) == 3
 
@@ -72,8 +75,6 @@ class hex_node:
             self.value -= change
             return False
         return True
-
-
 
 
 class hex_grid:
@@ -226,6 +227,21 @@ class hex_grid:
         print(string)
         return string
 
+    @staticmethod
+    def get_hex(node, size):
+        node_set = set([node])
+        new_nodes = set([node])
+        for i in range(size):
+            new_ring = node_set.copy()
+            for node in new_nodes:
+                for node_neighbor in node.get_neighbors():
+                    if node_neighbor not in node_set:
+                        node_set.add(node_neighbor)
+                        new_ring.add(node_neighbor)
+
+            new_nodes = new_ring
+
+        return list(node_set)
 
 
 # grid_5 = hex_grid(5)
